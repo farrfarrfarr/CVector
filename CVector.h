@@ -1,12 +1,9 @@
 #include <stdlib.h>
+#include <stdint.h>
 
-/*  CVECTOR_DEFAULT_CAPACITY
 
-    Initial size of array.
-
-*/
-
-#define CVECTOR_DEFAULT_CAPACITY 100 
+#define DEBUG false                             // Debug flag
+#define CVECTOR_DEFAULT_CAPACITY 100            // Initial size of array.
 
 /*  typedef struct cvector
 
@@ -35,10 +32,6 @@ typedef struct cvector
     Example usage:
         cvector vec;
         cvector_init(vec,sizeof(int));
-
-        int *ptr = vec.ptr;
-        ptr[0] = 123;
-
 
 */
 
@@ -97,11 +90,21 @@ do{                                                                     \
     
     Returns pointer to first element of the array
 
-    [MISSING]
+    Example usage:
+            cvector vec;
+            cvector_init(vec,sizeof(int));
+
+            int *p   = cvector_begin(vec);
+            int *end = (int*)cvector_end(vec);
+
+                for (; p != end; ++p) 
+                {
+                    printf("%d\n", *p);
+                }
 
 */
-#define cvector_begin(cvec) ((cvec).ptr)
 
+#define cvector_begin(cvec) ((cvec).ptr)
 
 /* [ cvector_end ]
    Returns pointer to last element + 1
@@ -117,14 +120,27 @@ do{                                                                     \
             {
                 printf("%d\n", *p);
             }
-
 */
 
-#define cvector_end(cvec) ((char*)(cvec).ptr + ((cvec).elem_size * (cvec).size))
+#define cvector_end(cvec) ((uint8_t*)(cvec).ptr + ((cvec).elem_size * (cvec).size))
+
+
+/* [ cvector_pop_back ]
+
+    Removes the last element. Does not free up capacity.
+    Example usage:
+        [MISSING]
+*/
+
+#define cvector_pop_back(cvec)                          \
+do{                                                     \
+    if ((cvec).size > 0)                                \
+    {                                                   \
+        (cvec).size -= 1;                               \
+    }                                                   \
+}while (0)                                          
 
 // cvector_push_back ( pushes one new element and reallocates if needed)
-
-// cvector_pop_back, remove the last element. Does not free up capacity.
 
 // cvector_clear(), remove all elements. size = 0. Capactiy the same.
 
