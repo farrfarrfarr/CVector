@@ -106,10 +106,10 @@ do{                                                                     \
 
 #define cvector_begin(cvec) ((cvec).ptr)
 
-/* [ cvector_end ]
-   Returns pointer to last element + 1
+/*  [ cvector_end ]
+    Returns pointer to last element + 1
 
-   Example usage:
+    Example usage:
         cvector vec;
         cvector_init(vec,sizeof(int));
 
@@ -125,7 +125,7 @@ do{                                                                     \
 #define cvector_end(cvec) ((uint8_t*)(cvec).ptr + ((cvec).elem_size * (cvec).size))
 
 
-/* [ cvector_pop_back ]
+/*  [ cvector_pop_back ]
 
     Removes the last element. Does not free up capacity.
     Example usage:
@@ -140,9 +140,31 @@ do{                                                     \
     }                                                   \
 }while (0)                                          
 
-// cvector_push_back ( pushes one new element and reallocates if needed)
 
-// cvector_clear(), remove all elements. size = 0. Capactiy the same.
+/*  [cvector_clear]
+
+    Removes all elements in vector. 
+    Sets size = 0, does not change capacity.
+
+    Example usage:
+        cvector vec;
+        cvector_init(vec,sizeof(int));
+
+        cvector_clear(cvec);
+*/
+
+#define cvector_clear(cvec)                             \
+do{                                                     \
+        (cvec).size = 0;                                \
+}while (0)  
+
+
+
+
+
+
+
+// cvector_push_back ( pushes one new element and reallocates if needed)
 
 // cvector_shrink_to_size (reduce capacity to size, and free relevant memory)
 
