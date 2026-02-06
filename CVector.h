@@ -1,6 +1,21 @@
 #include <stdlib.h>
 
-#define CVECTOR_DEFAULT_CAPACITY 100
+/*  CVECTOR_DEFAULT_CAPACITY
+
+    Initial size of array.
+
+*/
+
+#define CVECTOR_DEFAULT_CAPACITY 100 
+
+/*  typedef struct cvector
+
+    size        = number of used elements.
+    capacity    = number of allocated elements in memory
+    elem_size   = size of each element.
+    *ptr        = pointer to be used as dynamic array.
+
+*/
 
 typedef struct cvector
 {
@@ -13,10 +28,17 @@ typedef struct cvector
 
 /*  [ cvector_init ]
 
-    Init function for cvector. 
-    Input parameters:
-        * cvec = cvector struct
-        * el_size = sizeof the relevant data type.
+    Init function for cvector. Input parameters:
+        cvec    = cvector struct
+        el_size = sizeof the relevant data type.
+
+    Example usage:
+        cvector vec;
+        cvector_init(vec,sizeof(int));
+
+        int *ptr = vec.ptr;
+        ptr[0] = 123;
+
 
 */
 
@@ -32,6 +54,12 @@ do{                                                                     \
     
     Function to free memory on the heap, 
     for the pointer used in the given struct.
+
+    Example usage:
+        cvector vec;
+        cvector_init(vec,sizeof(int));
+
+        cvector_free(vec);
 
 */
 
@@ -49,6 +77,12 @@ do{                                                                     \
     
     Function to fully reset- and re-initalise cvector
 
+    Example usage:
+        cvector vec;
+        cvector_init(vec,sizeof(int));
+
+        cvector_reset(vec);
+
 */
 
 #define cvector_reset(cvec)                                             \
@@ -63,8 +97,30 @@ do{                                                                     \
     
     Returns pointer to first element of the array
 
+    [MISSING]
+
 */
 #define cvector_begin(cvec) ((cvec).ptr)
+
+
+/* [ cvector_end ]
+   Returns pointer to last element + 1
+
+   Example usage:
+        cvector vec;
+        cvector_init(vec,sizeof(int));
+
+        int *p   = cvector_begin(vec);
+        int *end = (int*)cvector_end(vec);
+
+            for (; p != end; ++p) 
+            {
+                printf("%d\n", *p);
+            }
+
+*/
+
+#define cvector_end(cvec) ((char*)(cvec).ptr + ((cvec).elem_size * (cvec).size))
 
 // cvector_push_back ( pushes one new element and reallocates if needed)
 
@@ -76,8 +132,5 @@ do{                                                                     \
 
 // cvector_erase_at(X), delete specific element, and reorder the memory?
 
-// cvector_end() <- returns pointer to last element +1
-
-// cvector_begin() returns pointer to first elmeent
 
 
