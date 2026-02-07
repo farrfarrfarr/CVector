@@ -123,7 +123,6 @@ do{                                                                     \
 */
 #define cvector_end(cvec) ((uint8_t*)(cvec).ptr + ((cvec).elem_size * (cvec).size))
 
-
 /*  [ cvector_pop_back ]
 
     Removes the last element. Does not free up capacity.
@@ -137,7 +136,6 @@ do{                                                     \
         (cvec).size -= 1;                               \
     }                                                   \
 }while (0)                                          
-
 
 /*  [cvector_clear]
 
@@ -160,7 +158,7 @@ do{                                                     \
     Appends one element at element position size+1.
     Auto-expand allocated memory by GROWTH_MULTIPLIER if size becomes == capacity.
 
-    Input parameters:
+    Parameters:
         cvec = vector to append value to
         type = datatype of the new element
         element = value to append
@@ -203,10 +201,56 @@ do{                                                                             
     }                                                                                           \
 }while(0)   
 
+/*  [ cvector_reserve ]
 
-// cvector_reserve(nr_of_elements) (realloc and set capacity to nr of elemens)
+    Reservs nr_of_elements amount of elements as total capacity, and allocates necessary memory.
 
-// cvector_grow_by(increase_elements_by_x_amount)  (realloc and set capacity to old capacity + increase_elemnets_by_x_amount)
+    Parameters:
+        cvec = cvector to be updated with new capacity.
+        nr_of_elements = will be new capacity for cvector.
+
+    Example usage:
+        cvector cvec;
+        cvector_init(cvec,sizeof(int));
+
+        cvector_reserve(cvec, 200);
+
+*/
+#define cvector_reserve(cvec, nr_of_elements)                                                   \
+do{                                                                                             \
+    if((nr_of_elements) > (cvec).capacity)                                                      \
+    {                                                                                           \
+        void *__cvector_void_ptr = realloc((cvec).ptr, (nr_of_elements) * (cvec).elem_size);    \
+        if (__cvector_void_ptr != NULL)                                                         \
+        {                                                                                       \
+             (cvec).ptr = __cvector_void_ptr;                                                   \
+             (cvec).capacity = (nr_of_elements);                                                \
+        }                                                                                       \
+    }                                                                                           \
+}while(0)
+
+/*  [ cvector_grow_capacity ]
+
+    Makes room for 'N' more pushes. 
+    Grows cvector by x elements, on top of existing size.
+
+    Parameters:
+        cvec = cvector to be updated with new capacity.
+        nr_of_elements_to_grow = elements to be added on top of existing capacity
+
+     Example usage:
+        cvector cvec;
+        cvector_init(cvec,sizeof(int));
+
+        cvector_grow_capacity(cvec,20);   
+*/
+#define cvector_grow_capacity(cvec, nr_of_elements_to_grow)                                     \
+do{                                                                                             \
+    if((nr_of_elements_to_grow) > 0)                                                            \
+    {                                                                                           \
+        cvector_reserve((cvec), ((cvec).size + (nr_of_elements_to_grow)));                      \
+    }                                                                                           \
+}while(0)
 
 // cvector_shrink_to_size (reduce capacity to size, and free relevant memory)
 
