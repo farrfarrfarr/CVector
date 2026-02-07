@@ -35,7 +35,7 @@ typedef struct cvector
 
     Example usage:
         cvector vec;
-        cvector_init(vec,sizeof(int));
+        cvector_init(cvec,sizeof(int));
 
 */
 #define cvector_init(cvec, el_size)                                     \
@@ -252,7 +252,34 @@ do{                                                                             
     }                                                                                           \
 }while(0)
 
-// cvector_shrink_to_size (reduce capacity to size, and free relevant memory)
+/*  [ cvector_shrink_to_size ]
+
+    Srinks cvector down to current size.
+
+    Parameters:
+        cvec = cvector to shrink.
+
+    Example usage:
+        cvector cvec;
+        cvector_init(cvec,sizeof(int));
+        cvector_push_back(cvec, int, 32);
+        cvector_grow_capacity(cvec,200); 
+        . . .
+        cvector_shrink_to_size(cvec);   
+*/
+#define cvector_shrink_to_size(cvec)                                                            \
+do{                                                                                             \
+    if((cvec).capacity > (cvec).size && (cvec).size > 0)                                        \
+    {                                                                                           \
+        void *__cvector_void_ptr = realloc((cvec).ptr, ((cvec).size) * (cvec).elem_size);       \
+        if (__cvector_void_ptr != NULL)                                                         \
+        {                                                                                       \
+             (cvec).ptr = __cvector_void_ptr;                                                   \
+             (cvec).capacity = ((cvec).size);                                                   \
+        }                                                                                       \
+    }                                                                                           \
+}while(0)
+
 
 // cvector_erase_at(X), delete specific element, and reorder the memory?
 
