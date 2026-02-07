@@ -1,9 +1,13 @@
 #include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
 #include <stdint.h>
+#include <assert.h>
 
 
-#define DEBUG false                             // Debug flag
-#define CVECTOR_DEFAULT_CAPACITY 100            // Initial size of array.
+#define DEBUG false                           // Debug flag
+#define CVECTOR_DEFAULT_CAPACITY 4            // Initial size of array.
+#define GROWTH_MULTIPLIER 2                   // Growth multiplier of allocated memory when size become == capacity.
 
 /*  typedef struct cvector
 
@@ -34,7 +38,6 @@ typedef struct cvector
         cvector_init(vec,sizeof(int));
 
 */
-
 #define cvector_init(cvec, el_size)                                     \
 do{                                                                     \
         (cvec).size = 0;                                                \
@@ -55,7 +58,6 @@ do{                                                                     \
         cvector_free(vec);
 
 */
-
 #define cvector_free(cvec)                                              \
 do{                                                                     \
     free( (cvec).ptr);                                                  \
@@ -77,7 +79,6 @@ do{                                                                     \
         cvector_reset(vec);
 
 */
-
 #define cvector_reset(cvec)                                             \
 do{                                                                     \
     size_t _cvector_saved_elem_size = (cvec).elem_size;                 \
@@ -103,7 +104,6 @@ do{                                                                     \
                 }
 
 */
-
 #define cvector_begin(cvec) ((cvec).ptr)
 
 /*  [ cvector_end ]
@@ -121,7 +121,6 @@ do{                                                                     \
                 printf("%d\n", *p);
             }
 */
-
 #define cvector_end(cvec) ((uint8_t*)(cvec).ptr + ((cvec).elem_size * (cvec).size))
 
 
@@ -131,7 +130,6 @@ do{                                                                     \
     Example usage:
         [MISSING]
 */
-
 #define cvector_pop_back(cvec)                          \
 do{                                                     \
     if ((cvec).size > 0)                                \
@@ -152,19 +150,63 @@ do{                                                     \
 
         cvector_clear(cvec);
 */
-
 #define cvector_clear(cvec)                             \
 do{                                                     \
         (cvec).size = 0;                                \
 }while (0)  
 
+/*  [ cvector_push_back ]
+
+    Appends one element at element position size+1.
+    Auto-expand allocated memory by GROWTH_MULTIPLIER if size becomes == capacity.
+
+    Input parameters:
+        cvec = vector to append value to
+        type = datatype of the new element
+        element = value to append
+
+    Example usage:
+    cvector vec;
+    cvector_init(vec,sizeof(int));
+
+    cvector_push_back(cvec, int, 433);
+
+    int a = 42;
+    cvector_push_back(cvec, int, a);
+*/
+#define cvector_push_back(cvec, type,element)                                                   \
+do{                                                                                             \
+    assert(cvec.ptr != NULL);                                                                   \
+    assert(cvec.elem_size == sizeof(type));                                                     \
+                                                                                                \
+    bool __cvector_valid_push_back = true;                                                      \
+    if ((cvec).size == (cvec).capacity)                                                         \
+    {                                                                                           \
+        const size_t NEW_CAPACITY = (GROWTH_MULTIPLIER * (cvec).capacity);                      \
+        void *__cvector_void_ptr = realloc((cvec).ptr, NEW_CAPACITY * (cvec).elem_size);        \
+                                                                                                \
+        if (__cvector_void_ptr != NULL)                                                         \
+        {                                                                                       \
+             (cvec).ptr = __cvector_void_ptr;                                                   \
+             (cvec).capacity = NEW_CAPACITY;                                                    \
+        }                                                                                       \
+        else                                                                                    \
+        {                                                                                       \
+            __cvector_valid_push_back = false;                                                  \
+        }                                                                                       \
+    }                                                                                           \
+    if (__cvector_valid_push_back)                                                              \
+    {                                                                                           \
+        type __cvector_tmp = element;                                                           \
+        memcpy(cvector_end((cvec)), &__cvector_tmp, sizeof(type));                              \
+        (cvec).size += 1;                                                                       \
+    }                                                                                           \
+}while(0)   
 
 
+// cvector_reserve(nr_of_elements) (realloc and set capacity to nr of elemens)
 
-
-
-
-// cvector_push_back ( pushes one new element and reallocates if needed)
+// cvector_grow_by(increase_elements_by_x_amount)  (realloc and set capacity to old capacity + increase_elemnets_by_x_amount)
 
 // cvector_shrink_to_size (reduce capacity to size, and free relevant memory)
 
