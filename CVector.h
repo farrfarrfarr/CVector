@@ -292,22 +292,24 @@ do{                                                                             
         cvector cvec;
         cvector_init(cvec,sizeof(int));
         cvector_push_back(cvec, int, 32);
+        cvector_push_back(cvec, int, 432);
+        cvector_push_back(cvec, int, 534);
         . . .
-        cvector_erase_at(cvec,0);   
+        cvector_erase_at(cvec,1);   
 */
 #define cvector_erase_at(cvec, index_to_delete)                                                 \
-do{                                                                                               \
-    assert(index_to_delete < (cvec).size);                                                            \
-    if (((index_to_delete) >= 0) && ((index_to_delete) < (cvec).size))                           \
+do{                                                                                             \
+    assert(index_to_delete < (cvec).size);                                                      \
+    if (((index_to_delete) >= 0) && ((index_to_delete) < (cvec).size))                          \
     {                                                                                           \
         uint8_t *base_ptr = (uint8_t*)(cvec).ptr;                                               \
-        uint8_t *dest_ptr = base_ptr + (index_to_delete * (cvec).elem_size);                          \
-        uint8_t *src_ptr =  dest_ptr  +  1  * (cvec).elem_size;                   \
-        size_t n_size = ((cvec).size - index_to_delete - 1) * (cvec).elem_size;                      \
+        uint8_t *dest_ptr = base_ptr + (index_to_delete * (cvec).elem_size);                    \
+        uint8_t *src_ptr =  dest_ptr  +  1  * (cvec).elem_size;                                 \
+        size_t n_size = ((cvec).size - index_to_delete - 1) * (cvec).elem_size;                 \
                                                                                                 \
-        memmove(dest_ptr, src_ptr, n_size);                          \
-                                                                                               \
-        (cvec).size -= 1;                                                                  \
-    }                                                                                              \
+        memmove(dest_ptr, src_ptr, n_size);                                                     \
+                                                                                                \
+        (cvec).size -= 1;                                                                       \
+    }                                                                                           \
 }while(0)
 
