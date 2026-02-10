@@ -1,11 +1,12 @@
+#ifndef CVECTOR_H
+#define CVECTOR_H
+
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
 #include <stdint.h>
 #include <assert.h>
 
-
-#define DEBUG false                           // Debug flag
 #define CVECTOR_DEFAULT_CAPACITY 4            // Initial size of array.
 #define GROWTH_MULTIPLIER 2                   // Growth multiplier of allocated memory when size become == capacity.
 
@@ -313,3 +314,10 @@ do{                                                                             
     }                                                                                           \
 }while(0)
 
+/*  [ cvector_get_index_element ]
+    Returns pointer to element at index_element position.
+*/
+#define cvector_get_index_element(cvec, index_element)  ((uint8_t*)(cvec).ptr + index_element * (cvec).elem_size)
+
+
+#endif // CVECTOR_H
